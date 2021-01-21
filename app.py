@@ -178,24 +178,67 @@ def create_app(test_config=None):
 
   @app.route('/movies/<int:id>', methods = ['GET'])
   def get_movie_detail(id):
-    return jsonify({
-      'success': True,
-      'action': 'get a movie',
-    })
+    try:
+      movie = Movie.query.filter(Movie.id == id).one_or_none()
+      if not movie:
+        abort(404)
+
+      formatted_movie = [movie.format()]
+
+      return jsonify({
+        'success': True,
+        'action': 'get a movie',
+        'movies': formatted_movie,
+      })
+    except Exception as e:
+      print(e)
+      abort(422)
 
   @app.route('/movies/<int:id>', methods = ['PATCH'])
   def edit_movie(id):
-    return jsonify({
-      'success': True,
-      'action': 'edit an existing movie'
-    })
+    try:
+      body = request.get_json()
+      if body is None:
+        abort(400)
+      
+      movie = Movie.query.filter(Movie.id == id).one_or_none()
+      if not movie:
+        abort(404)
+      
+      if body.get('title'):
+        movie.title = body.get('title')
+      elif body.get('date'):
+        movie.date = body.get('date')
+      else:
+        abort(400)
+
+      movie.update()
+
+      formatted_movie = [movie.format()]
+
+      return jsonify({
+        'success': True,
+        'action': 'edit an existing movie',
+        'movies': formatted_movie,
+      })
+    except:
+      abort(422)
 
   @app.route('/movies/<int:id>', methods = ['DELETE'])
   def delete_movie(id):
-    return jsonify({
-      'success': True,
-      'action': 'delete an existing movie',
-    })
+    try:
+      movie = Movie.query.filter(Movie.id == id).one_or_none()
+      if not movie:
+        abort(404)
+      
+      movie.delete()
+
+      return jsonify({
+        'success': True,
+        'action': 'delete an existing movie',
+      })
+    except:
+      abort(422)
   
 
 
