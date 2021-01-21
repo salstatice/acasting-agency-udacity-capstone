@@ -135,17 +135,46 @@ def create_app(test_config=None):
   '''
   @app.route('/movies', methods = ['GET'])
   def get_movies():
-    return jsonify({
-      'success': True,
-      'action': 'get all movies',
-    })
+    try:
+      movies = Movie.query.all()
+
+      formatted_movies = [movie.format() for movie in movies]
+
+      return jsonify({
+        'success': True,
+        'action': 'get all movies',
+        'movies': formatted_movies,
+      })
+    except Exception as e:
+      print(e)
+      abort(422)
 
   @app.route('/movies', methods = ['POST'])
   def add_movie():
-    return jsonify({
-      'success': True,
-      'action': 'add a new movie',
-    })
+    try:
+      body = request.get_json()
+      if body is None:
+        abort(400)
+
+      # only allow assgin id for testing purpose 
+      req_id = body.get('id')
+      checkMovie = Movie.query.filter(Movie.id == req_id).one_or_none()
+      if checkMovie:
+        abort(400)
+
+      req_title = body.get('title')
+      req_date = body.get('date')
+
+      movie = Movie(id=req_id, title=req_title, date=req_date)
+      movie.insert()
+
+      return jsonify({
+        'success': True,
+        'action': 'add a new movie',
+      })
+    except Exception as e:
+      print(e)
+      abort(422)
 
   @app.route('/movies/<int:id>', methods = ['GET'])
   def get_movie_detail(id):

@@ -106,7 +106,10 @@ class Movie(db.Model):
   date = Column(db.DateTime, nullable=False)
   roles = db.relationship('Role', backref='movie', lazy=True)
 
-  def __init__(self, title, date):
+  # adding assgined id for testing purpose
+
+  def __init__(self, id, title, date):
+    self.id = id
     self.title = title
     self.date = date
 
@@ -114,8 +117,49 @@ class Movie(db.Model):
     return {
       'id': self.id,
       'title': self.title,
-      'release_year': self.data.strftime("%Y"),
+      'release_year': self.date.strftime("%Y"),
     }
+  
+  '''
+  insert()
+    inserts a new model into a database
+    the model must have a unique id or null id
+    EXAMPLE
+      movie = Movie(title=req_title, date=req_date)
+      movie.insert()
+  '''
+  def insert(self):
+    db.session.add(self)
+    db.session.commit()
+
+  '''
+  update()
+    updates a model in a database
+    the model must exist in the database
+    EXAMPLE
+      movie = Movie.query.filter(Movie.id == id).one_or_none()
+      movie.title = "New Movie"
+      movie.update()
+  '''
+  def update(self):
+    db.session.commit()
+
+  '''
+  delete()
+    delets a model from a database
+    the model must exist in the database
+    EXAMPLE
+      movie = Movie.query.filter(Movie.id == id).one_or_none()
+      movie.delete()
+  '''
+  def delete(self):
+    db.session.delete(self)
+    db.session.commit()
+
+  def __repr__(self):
+    return json.dumps(self.format())
+
+
 
 '''
 Role
