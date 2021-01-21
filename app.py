@@ -32,6 +32,13 @@ def create_app(test_config=None):
       'action': 'add a new actor',
     })
 
+  @app.route('/actors/<int:id>', methods = ['GET'])
+  def get_actor_detail(id):
+    return jsonify({
+      'success': True,
+      'action': 'get a actor',
+    })
+
   @app.route('/actors/<int:id>', methods = ['DELETE'])
   def delete_actor(id):
     return jsonify({
@@ -65,6 +72,13 @@ def create_app(test_config=None):
       'action': 'add a new movie',
     })
 
+  @app.route('/movies/<int:id>', methods = ['GET'])
+  def get_movie_detail(id):
+    return jsonify({
+      'success': True,
+      'action': 'get a movie',
+    })
+
   @app.route('/movies/<int:id>', methods = ['DELETE'])
   def delete_movie(id):
     return jsonify({
@@ -80,6 +94,29 @@ def create_app(test_config=None):
     })
 
 
+  '''
+  Decorators for Roles
+  '''
+  @app.route('/castings', methods = ['GET'])
+  def get_roles():
+    return jsonify({
+      'success': True,
+      'action': 'get all roles',
+    })
+
+  @app.route('/castings', methods = ['POST'])
+  def add_role():
+    return jsonify({
+      'success': True,
+      'action': 'add a new role',
+    })
+
+  @app.route('/castings/<int:id>', methods = ['DELETE'])
+  def delete_role(id):
+    return jsonify({
+      'success': True,
+      'action': 'delete an role',
+    })
 
   return app
 
