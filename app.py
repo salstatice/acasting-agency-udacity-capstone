@@ -7,11 +7,12 @@ from models import setup_db
 def create_app(test_config=None):
   # create and configure the app
   app = Flask(__name__)
+  setup_db(app)
   CORS(app)
 
   @app.route('/')
   def welcome():
-  return 'Welcome to the empty main page!'
+    return 'Welcome to the empty main page!'
 
 
   return app
