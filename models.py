@@ -31,6 +31,7 @@ class Actor(db.Model):
   name = Column(String)
   age = Column(Integer)
   gender = Column(String)
+  roles = db.relationship('Role', backref='actor', lazy=True)
 
   def __init__(self, name, age, gender=""):
     self.name = name
@@ -42,9 +43,56 @@ class Actor(db.Model):
       'id': self.id,
       'name': self.name,
       'age': self.age,
-      'gender': self.gender}
+      'gender': self.gender,
+    }
 
 '''
 Movie
 Have title and release date
 '''
+class Movie(db.Model):
+  __tablename__ = 'Movie'
+
+  id = Column(Integer, primary_key=True)
+  title = Column(String)
+  date = Column(db.DateTime, nullable=False)
+  roles = db.relationship('Role', backref='movie', lazy=True)
+
+  def __init__(self, title, date):
+    self.title = title
+    self.date = date
+
+  def format(self):
+    return {
+      'id': self.id,
+      'title': self.title,
+      'release_year': self.data.strftime("%Y"),
+    }
+
+'''
+Role
+Have role name, actor name and related movie
+'''
+class Role(db.Model):
+  __tablename__ = 'Role'
+
+  id = Column(Integer, primary_key=True)
+  role_name = Column(String)
+  actor_id = Column(Integer, db.ForeignKey('Actor.id'))
+  movie_id = Column(Integer, db.ForeignKey('Movie.id'))
+
+  def __init__(self, role_name, actor_id, movie_id):
+    self.role_name = role_name
+    self.actor_id = actor_id
+    self.movie_id = movie_id
+
+  def format(self):
+    return {
+      'id': self.id,
+      'role_name': self.role_name,
+      'actor_id': self.actor_id,
+      'actor_name': self.actor.name,
+      'movie_id': self.movie_id,
+      'movie_name': self.movie.title,
+    }
+  
