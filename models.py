@@ -24,7 +24,7 @@ Actor
 Have name, age and gender
 '''
 class Actor(db.Model):  
-  __tablename__ = 'People'
+  __tablename__ = 'Actor'
 
   id = Column(Integer, primary_key=True)
   name = Column(String)
