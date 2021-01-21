@@ -2,7 +2,7 @@ import os
 from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-from models import setup_db
+from models import setup_db, Actor, Movie, Role
 
 def create_app(test_config=None):
   # create and configure the app
@@ -17,26 +17,56 @@ def create_app(test_config=None):
   '''
   Decorators for Actors
   '''
-
   @app.route('/actors', methods = ['GET'])
   def get_actors():
-    return jsonify({
-      'success': True,
-      'action': 'get all actors',
-    })
+    try:
+      actors = Actor.query.all()
+
+      formatted_actors = [actor.format() for actor in actors]
+
+      return jsonify({
+        'success': True,
+        'action': 'get all actors',
+        'actors': formatted_actors,
+      })
+    except:
+      abort(422)
 
   @app.route('/actors', methods = ['POST'])
   def add_actor():
-    return jsonify({
-      'success': True,
-      'action': 'add a new actor',
-    })
+    try:
+      body = request.get_json()
+      if body is None:
+        abort(400)
+      
+      req_name = body.get('name')
+      req_age = body.get('age')
+      req_gender = body.get('gender')
+
+      actor = Actor(name=req_name, age=req_age, gender=req_gender)
+      actor.insert()
+
+      return jsonify({
+        'success': True,
+        'action': 'add a new actor',
+      })
+    # except TypeError:
+    #   abort(400)
+    except Exception as e:
+      abort(422)
 
   @app.route('/actors/<int:id>', methods = ['GET'])
   def get_actor_detail(id):
     return jsonify({
       'success': True,
       'action': 'get a actor',
+    })
+
+  @app.route('/actors/<int:id>', methods = ['PATCH'])
+  def edit_actor(id):
+    return jsonify({
+      'success': True,
+      'action': 'edit an existing actor'
     })
 
   @app.route('/actors/<int:id>', methods = ['DELETE'])
@@ -46,14 +76,8 @@ def create_app(test_config=None):
       'action': 'delete an existing actor',
     })
   
-  @app.route('/actors/<int:id>', methods = ['PATCH'])
-  def edit_actor(id):
-    return jsonify({
-      'success': True,
-      'action': 'edit an existing actor'
-    })
 
-  
+
 
   '''
   Decorators for Movies
@@ -79,6 +103,13 @@ def create_app(test_config=None):
       'action': 'get a movie',
     })
 
+  @app.route('/movies/<int:id>', methods = ['PATCH'])
+  def edit_movie(id):
+    return jsonify({
+      'success': True,
+      'action': 'edit an existing movie'
+    })
+
   @app.route('/movies/<int:id>', methods = ['DELETE'])
   def delete_movie(id):
     return jsonify({
@@ -86,12 +117,6 @@ def create_app(test_config=None):
       'action': 'delete an existing movie',
     })
   
-  @app.route('/movies/<int:id>', methods = ['PATCH'])
-  def edit_movie(id):
-    return jsonify({
-      'success': True,
-      'action': 'edit an existing movie'
-    })
 
 
   '''

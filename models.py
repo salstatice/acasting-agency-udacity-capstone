@@ -38,6 +38,10 @@ class Actor(db.Model):
     self.age = age
     self.gender = gender
 
+  '''
+  format()
+    json repsentation of the Actor model
+  '''
   def format(self):
     return {
       'id': self.id,
@@ -45,6 +49,19 @@ class Actor(db.Model):
       'age': self.age,
       'gender': self.gender,
     }
+
+  '''
+  insert()
+    inserts a new model into a database
+    the model must have a unique id or null id
+    EXAMPLE
+      actor = Actor(name=req_name, age=req_age, gender=req_gender)
+      actor.insert()
+  '''
+  def insert(self):
+    db.session.add(self)
+    db.session.commit()
+  
 
 '''
 Movie
