@@ -1,3 +1,2 @@
-database_name="acasting"
-export DATABASE_URL="***REMOVED***"
+export DATABASE_URL="postgres://postgres@localhost:5432/acasting"
 
