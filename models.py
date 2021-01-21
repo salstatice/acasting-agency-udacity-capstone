@@ -33,7 +33,10 @@ class Actor(db.Model):
   gender = Column(String)
   roles = db.relationship('Role', backref='actor', lazy=True)
 
-  def __init__(self, name, age, gender=""):
+  # adding assgined id for testing purpose
+
+  def __init__(self, id, name, age, gender=""):
+    self.id = id
     self.name = name
     self.age = age
     self.gender = gender
@@ -61,12 +64,40 @@ class Actor(db.Model):
   def insert(self):
     db.session.add(self)
     db.session.commit()
-  
+
+  '''
+  update()
+    updates a model in a database
+    the model must exist in the database
+    EXAMPLE
+      actor = Actor.query.filter(Actor.id == id).one_or_none()
+      actor.age = 36
+      actor.update()
+  '''
+  def update(self):
+    db.session.commit()
+
+  '''
+  delete()
+    delets a model from a database
+    the model must exist in the database
+    EXAMPLE
+      actor = Actor.query.filter(Actor.id == id).one_or_none()
+      actor.delete()
+  '''
+  def delete(self):
+    db.session.delete(self)
+    db.session.commit()
+
+  def __repr__(self):
+    return json.dumps(self.format())
+
 
 '''
 Movie
 Have title and release date
 '''
+
 class Movie(db.Model):
   __tablename__ = 'Movie'
 

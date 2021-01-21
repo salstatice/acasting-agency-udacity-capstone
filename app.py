@@ -39,11 +39,17 @@ def create_app(test_config=None):
       if body is None:
         abort(400)
       
+      # only allow assgin id for testing purpose 
+      req_id = body.get('id')
+      checkActor = Actor.query.filter(Actor.id == req_id).one_or_none()
+      if checkActor:
+        abort(400)
+
       req_name = body.get('name')
       req_age = body.get('age')
       req_gender = body.get('gender')
 
-      actor = Actor(name=req_name, age=req_age, gender=req_gender)
+      actor = Actor(id=req_id, name=req_name, age=req_age, gender=req_gender)
       actor.insert()
 
       return jsonify({
@@ -53,28 +59,73 @@ def create_app(test_config=None):
     # except TypeError:
     #   abort(400)
     except Exception as e:
+      print(e)
       abort(422)
 
   @app.route('/actors/<int:id>', methods = ['GET'])
   def get_actor_detail(id):
-    return jsonify({
-      'success': True,
-      'action': 'get a actor',
-    })
+    try:
+      actor = Actor.query.filter(Actor.id == id).one_or_none()
+      if not actor:
+        abort(404)
+      
+      formatted_actor = [actor.format()]
+
+      return jsonify({
+        'success': True,
+        'action': 'get a actor',
+        'actors': formatted_actor,
+      })
+    except:
+      abort(422)
 
   @app.route('/actors/<int:id>', methods = ['PATCH'])
   def edit_actor(id):
-    return jsonify({
-      'success': True,
-      'action': 'edit an existing actor'
-    })
+    try:
+      body = request.get_json()
+      if body is None:
+        abort(400)
+
+      actor = Actor.query.filter(Actor.id == id).one_or_none()
+      if not actor:
+        abort(404)
+      
+      if body.get('name'):
+        actor.name = body.get('name')
+      elif body.get('age'):
+        actor.age = body.get('age')
+      elif body.get('gender'):
+        actor.gender = body.get('gender')
+      else:
+        abort(400)
+
+      actor.update()
+
+      formatted_actor = [actor.format()]
+
+      return jsonify({
+        'success': True,
+        'action': 'edit an existing actor',
+        'actors': formatted_actor,
+      })
+    except Exception as e:
+      abort(422)
 
   @app.route('/actors/<int:id>', methods = ['DELETE'])
   def delete_actor(id):
-    return jsonify({
-      'success': True,
-      'action': 'delete an existing actor',
-    })
+    try:
+      actor = Actor.query.filter(Actor.id == id).one_or_none()
+      if not actor:
+        abort(404)
+
+      actor.delete()
+    
+      return jsonify({
+        'success': True,
+        'action': 'delete an existing actor',
+      })
+    except:
+      abort(422)
   
 
 
