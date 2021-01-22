@@ -2,7 +2,9 @@ import os
 from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+
 from models import setup_db, Actor, Movie, Role
+from auth import AuthError, requires_auth
 
 def create_app(test_config=None):
   # create and configure the app
@@ -24,7 +26,8 @@ def welcome():
 #---------------------------------------
 
 @app.route('/actors', methods = ['GET'])
-def get_actors():
+@requires_auth()
+def get_actors(token):
   try:
     actors = Actor.query.all()
 
@@ -335,6 +338,20 @@ def delete_role(id):
 #       "error": 404,
 #       "message": "resource not found"
 #     }), 404
+#
+#   Authorization Errors are handlded differenrly by class AuthError
+#   EXAMPLE
+#     e.error = {
+#       'code':'authorization_header_missing',
+#       'description': 'Authriation header is expected'
+#     }
+#     e.status_code = 401
+#       or
+#     AuthError({
+#       'code':'authorization_header_missing',
+#       'description': 'Authriation header is expected'
+#     }, 401)
+#   return jsonify(e.error), e.status_code
 #------------------------------------------
 
 @app.errorhandler(422)
@@ -384,12 +401,12 @@ def method_not_found(error):
     "message": "method not found"
   }), 405
 
-# '''
-# Error handling for Auth Error
-# '''
-# @app.errorhandler(AuthError)
-# def auth_error(e):
-#     return jsonify(e.error), e.status_code
+@app.errorhandler(AuthError)
+def auth_error(e):
+  '''
+  Error handling for Auth Error
+  '''
+  return jsonify(e.error), e.status_code
 
 
 
