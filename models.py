@@ -8,23 +8,25 @@ database_path = os.environ['DATABASE_URL']
 
 db = SQLAlchemy()
 
-'''
-setup_db(app)
-    binds a flask application and a SQLAlchemy service
-'''
+
 def setup_db(app, database_path=database_path):
-    app.config["SQLALCHEMY_DATABASE_URI"] = database_path
-    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    db.app = app
-    db.init_app(app)
-    migrate = Migrate(app, db)
+  '''
+  setup_db(app)
+    binds a flask application and a SQLAlchemy service.
+  '''
+  app.config["SQLALCHEMY_DATABASE_URI"] = database_path
+  app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+  db.app = app
+  db.init_app(app)
+  migrate = Migrate(app, db)
 
 
-'''
-Actor
-Have name, age and gender
-'''
-class Actor(db.Model):  
+
+class Actor(db.Model):
+  '''
+  Actor
+  Have name, age and gender.
+  '''  
   __tablename__ = 'Actor'
 
   id = Column(Integer, primary_key=True)
@@ -41,11 +43,11 @@ class Actor(db.Model):
     self.age = age
     self.gender = gender
 
-  '''
-  format()
-    json repsentation of the Actor model
-  '''
   def format(self):
+    '''
+    format()
+      returns a json repsentation of the Actor model.
+    '''
     return {
       'id': self.id,
       'name': self.name,
@@ -53,39 +55,39 @@ class Actor(db.Model):
       'gender': self.gender,
     }
 
-  '''
-  insert()
-    inserts a new model into a database
-    the model must have a unique id or null id
-    EXAMPLE
-      actor = Actor(name=req_name, age=req_age, gender=req_gender)
-      actor.insert()
-  '''
   def insert(self):
+    '''
+    insert()
+      inserts a new model into a database
+      the model must have a unique id or null id
+      EXAMPLE
+        actor = Actor(name=req_name, age=req_age, gender=req_gender)
+        actor.insert()
+    '''
     db.session.add(self)
     db.session.commit()
 
-  '''
-  update()
-    updates a model in a database
-    the model must exist in the database
-    EXAMPLE
-      actor = Actor.query.filter(Actor.id == id).one_or_none()
-      actor.age = 36
-      actor.update()
-  '''
   def update(self):
+    '''
+    update()
+      updates a model in a database
+      the model must exist in the database
+      EXAMPLE
+        actor = Actor.query.filter(Actor.id == id).one_or_none()
+        actor.age = 36
+        actor.update()
+    '''
     db.session.commit()
 
-  '''
-  delete()
-    delets a model from a database
-    the model must exist in the database
-    EXAMPLE
-      actor = Actor.query.filter(Actor.id == id).one_or_none()
-      actor.delete()
-  '''
   def delete(self):
+    '''
+    delete()
+      delets a model from a database
+      the model must exist in the database
+      EXAMPLE
+        actor = Actor.query.filter(Actor.id == id).one_or_none()
+        actor.delete()
+    '''
     db.session.delete(self)
     db.session.commit()
 
@@ -93,12 +95,12 @@ class Actor(db.Model):
     return json.dumps(self.format())
 
 
-'''
-Movie
-Have title and release date
-'''
 
 class Movie(db.Model):
+  '''
+  Movie
+  Have title and release date
+  '''
   __tablename__ = 'Movie'
 
   id = Column(Integer, primary_key=True)
@@ -120,39 +122,39 @@ class Movie(db.Model):
       'release_year': self.date.strftime("%Y"),
     }
   
-  '''
-  insert()
-    inserts a new model into a database
-    the model must have a unique id or null id
-    EXAMPLE
-      movie = Movie(title=req_title, date=req_date)
-      movie.insert()
-  '''
   def insert(self):
+    '''
+    insert()
+      inserts a new model into a database
+      the model must have a unique id or null id
+      EXAMPLE
+        movie = Movie(title=req_title, date=req_date)
+        movie.insert()
+    '''
     db.session.add(self)
     db.session.commit()
 
-  '''
-  update()
-    updates a model in a database
-    the model must exist in the database
-    EXAMPLE
-      movie = Movie.query.filter(Movie.id == id).one_or_none()
-      movie.title = "New Movie"
-      movie.update()
-  '''
   def update(self):
+    '''
+    update()
+      updates a model in a database
+      the model must exist in the database
+      EXAMPLE
+        movie = Movie.query.filter(Movie.id == id).one_or_none()
+        movie.title = "New Movie"
+        movie.update()
+    '''
     db.session.commit()
 
-  '''
-  delete()
-    delets a model from a database
-    the model must exist in the database
-    EXAMPLE
-      movie = Movie.query.filter(Movie.id == id).one_or_none()
-      movie.delete()
-  '''
   def delete(self):
+    '''
+    delete()
+      delets a model from a database
+      the model must exist in the database
+      EXAMPLE
+        movie = Movie.query.filter(Movie.id == id).one_or_none()
+        movie.delete()
+    '''
     db.session.delete(self)
     db.session.commit()
 
@@ -161,11 +163,11 @@ class Movie(db.Model):
 
 
 
-'''
-Role
-Have role name, actor name and related movie
-'''
 class Role(db.Model):
+  '''
+  Role
+  Have role name, actor name and related movie
+  '''
   __tablename__ = 'Role'
 
   id = Column(Integer, primary_key=True)
@@ -191,27 +193,27 @@ class Role(db.Model):
       'movie_name': self.movie.title,
     }
   
-  '''
-  insert()
-    inserts a new model into a database
-    the model must have a unique id or null id
-    EXAMPLE
-      role = Role(role_name=req_role_name, actor_id=req_actor_id, movie_id=req_movie_id)
-      role.insert()
-  '''
   def insert(self):
+    '''
+    insert()
+      inserts a new model into a database
+      the model must have a unique id or null id
+      EXAMPLE
+        role = Role(role_name=req_role_name, actor_id=req_actor_id, movie_id=req_movie_id)
+        role.insert()
+    '''
     db.session.add(self)
     db.session.commit()
 
-  '''
-  delete()
-    delets a model from a database
-    the model must exist in the database
-    EXAMPLE
-      role = Role.query.filter(Role.id == id).one_or_none()
-      role.delete()
-  '''
   def delete(self):
+    '''
+    delete()
+      delets a model from a database
+      the model must exist in the database
+      EXAMPLE
+        role = Role.query.filter(Role.id == id).one_or_none()
+        role.delete()
+    '''
     db.session.delete(self)
     db.session.commit()
 

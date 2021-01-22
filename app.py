@@ -18,9 +18,11 @@ app = create_app()
 def welcome():
   return 'Welcome to the empty main page!'
 
-'''
-Decorators for Actors
-'''
+
+#---------------------------------------
+# Decorators for /actors
+#---------------------------------------
+
 @app.route('/actors', methods = ['GET'])
 def get_actors():
   try:
@@ -137,10 +139,10 @@ def delete_actor(id):
 
 
 
+#---------------------------------------
+# Decorators for /movies
+#---------------------------------------
 
-'''
-Decorators for Movies
-'''
 @app.route('/movies', methods = ['GET'])
 def get_movies():
   try:
@@ -249,10 +251,10 @@ def delete_movie(id):
     abort(422)
 
 
+#---------------------------------------
+# Decorators for /castings
+#---------------------------------------
 
-'''
-Decorators for Roles
-'''
 @app.route('/castings', methods = ['GET'])
 def get_roles():
   try:
@@ -322,65 +324,65 @@ def delete_role(id):
   except:
     abort(422)
 
-## Error Handling
-'''
-Error Handling
-  return 422, 400, 404, 405 and AuthError gracefully
-  Each error handler should return with error messages
-  EXAMPLE
-    jsonify({
-      "success": False, 
-      "error": 404,
-      "message": "resource not found"
-    }), 404
+#---------------------------------------
+# Error Handling
+#---------------------------------------
+#   return 422, 400, 404, 405 and AuthError gracefully
+#   Each error handler should return with error messages
+#   EXAMPLE
+#     jsonify({
+#       "success": False, 
+#       "error": 404,
+#       "message": "resource not found"
+#     }), 404
+#------------------------------------------
 
-'''
-'''
-Error handling for unprocessable entity
-'''
 @app.errorhandler(422)
 def unprocessable(error):
-    return jsonify({
-      "success": False, 
-      "error": 422,
-      "message": "unprocessable"
-    }), 422
+  '''
+  Error handling for unprocessable entity
+  '''
+  return jsonify({
+    "success": False, 
+    "error": 422,
+    "message": "unprocessable"
+  }), 422
 
-'''
-Error handling for bad request entity
-'''
 @app.errorhandler(400)
 def bad_request(error):
-    # if not hasattr(error, 'message'):
-    #   error.message = 'bad request'
-      
-    return jsonify({
-      'success': False,
-      'error': 400,
-      'message': 'bad request'
-    }), 400
+  '''
+  Error handling for bad request entity
+  '''
+  # if not hasattr(error, 'message'):
+  #   error.message = 'bad request'
+    
+  return jsonify({
+    'success': False,
+    'error': 400,
+    'message': 'bad request'
+  }), 400
 
-'''
-Error handling for resource not found entity
-'''
 @app.errorhandler(404)
 def resource_not_found(error):
-    return jsonify({
-      "success": False, 
-      "error": 404,
-      "message": "resource not found"
-    }), 404
+  '''
+  Error handling for resource not found entity
+  '''
+  return jsonify({
+    "success": False, 
+    "error": 404,
+    "message": "resource not found"
+  }), 404
 
-'''
-Error handling for method not found entity
-'''
 @app.errorhandler(405)
 def method_not_found(error):
-    return jsonify({
-      "success": False, 
-      "error": 405,
-      "message": "method not found"
-    }), 405
+  '''
+  Error handling for method not found entity
+  '''
+  return jsonify({
+    "success": False, 
+    "error": 405,
+    "message": "method not found"
+  }), 405
 
 # '''
 # Error handling for Auth Error
