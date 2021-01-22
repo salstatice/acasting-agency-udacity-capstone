@@ -53,6 +53,9 @@ def add_actor():
     req_age = body.get('age')
     req_gender = body.get('gender')
 
+    if not isinstance(req_age,int):
+      abort(400, {'message': 'age must be an interger'})
+
     actor = Actor(id=req_id, name=req_name, age=req_age, gender=req_gender)
     actor.insert()
 
@@ -60,11 +63,12 @@ def add_actor():
       'success': True,
       'action': 'add a new actor',
     })
-  # except TypeError:
-  #   abort(400)
   except Exception as e:
     print(e)
-    abort(422)
+    if e.code == 400:
+      abort(400)
+    else:
+      abort(422)
 
 @app.route('/actors/<int:id>', methods = ['GET'])
 def get_actor_detail(id):
@@ -317,6 +321,73 @@ def delete_role(id):
     })
   except:
     abort(422)
+
+## Error Handling
+'''
+Error Handling
+  return 422, 400, 404, 405 and AuthError gracefully
+  Each error handler should return with error messages
+  EXAMPLE
+    jsonify({
+      "success": False, 
+      "error": 404,
+      "message": "resource not found"
+    }), 404
+
+'''
+'''
+Error handling for unprocessable entity
+'''
+@app.errorhandler(422)
+def unprocessable(error):
+    return jsonify({
+      "success": False, 
+      "error": 422,
+      "message": "unprocessable"
+    }), 422
+
+'''
+Error handling for bad request entity
+'''
+@app.errorhandler(400)
+def bad_request(error):
+    # if not hasattr(error, 'message'):
+    #   error.message = 'bad request'
+      
+    return jsonify({
+      'success': False,
+      'error': 400,
+      'message': 'bad request'
+    }), 400
+
+'''
+Error handling for resource not found entity
+'''
+@app.errorhandler(404)
+def resource_not_found(error):
+    return jsonify({
+      "success": False, 
+      "error": 404,
+      "message": "resource not found"
+    }), 404
+
+'''
+Error handling for method not found entity
+'''
+@app.errorhandler(405)
+def method_not_found(error):
+    return jsonify({
+      "success": False, 
+      "error": 405,
+      "message": "method not found"
+    }), 405
+
+# '''
+# Error handling for Auth Error
+# '''
+# @app.errorhandler(AuthError)
+# def auth_error(e):
+#     return jsonify(e.error), e.status_code
 
 
 
