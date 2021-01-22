@@ -52,23 +52,24 @@ def get_token_check_auth_header():
     # return token
     return header_parts[1]
 
-## Verify jwt
+## Verify and decode jwt
+#
 # This is provided by Udcaity FSND in reference to a boilerplate
 # provided by Auth0
 
-'''
-@TODO implement verify_decode_jwt(token) method
-    @INPUTS
-        token: a json web token (string)
+# '''
+# @TODO implement verify_decode_jwt(token) method
+#     @INPUTS
+#         token: a json web token (string)
 
-    it should be an Auth0 token with key id (kid)
-    it should verify the token using Auth0 /.well-known/jwks.json
-    it should decode the payload from the token
-    it should validate the claims
-    return the decoded payload
+#     it should be an Auth0 token with key id (kid)
+#     it should verify the token using Auth0 /.well-known/jwks.json
+#     it should decode the payload from the token
+#     it should validate the claims
+#     return the decoded payload
 
-    !!NOTE urlopen has a common certificate error described here: https://stackoverflow.com/questions/50236117/scraping-ssl-certificate-verify-failed-error-for-http-en-wikipedia-org
-'''
+#     !!NOTE urlopen has a common certificate error described here: https://stackoverflow.com/questions/50236117/scraping-ssl-certificate-verify-failed-error-for-http-en-wikipedia-org
+# '''
 def verify_decode_jwt(token):
     jsonurl = urlopen(f'https://{AUTH0_DOMAIN}/.well-known/jwks.json')
     jwks = json.loads(jsonurl.read())
@@ -121,9 +122,30 @@ def verify_decode_jwt(token):
                 'description': 'Unable to find the appropriate key.'
             }, 400)
 
+# Check permission
+
+def check_permissions(permission, payload):
+    '''
+    check if the permission is cluded in the decoded jwt payload
+        raise an AuthError if
+        - permission is not included in JWT
+        - required permission is not included in the payload permission
+    '''
+    if 'permissions' not in payload:
+        raise AuthError({
+            'code': 'invalid_claims',
+            'description': 'Permissions not included in JWT.'
+        }, 400)
+    if permission not in payload['permissions']:
+        raise AuthError({
+            'code': 'unauthorized',
+            'description': 'Permission not found.'
+        }, 401)
+    return True
+
 # Auth decorator wrapper
 
-def requires_auth(permissions=''):
+def requires_auth(permission=''):
     '''
     Get permission and pass it to wraper for
         verifying header
@@ -135,6 +157,7 @@ def requires_auth(permissions=''):
         def wrapper(*args, **kwargs):
             token = get_token_check_auth_header()
             payload = verify_decode_jwt(token)
+            check_permissions(permission, payload)
 
             return f(token, *args, **kwargs)
         

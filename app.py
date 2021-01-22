@@ -26,7 +26,7 @@ def welcome():
 #---------------------------------------
 
 @app.route('/actors', methods = ['GET'])
-@requires_auth()
+@requires_auth('get:actors')
 def get_actors(token):
   try:
     actors = Actor.query.all()
@@ -42,6 +42,7 @@ def get_actors(token):
     abort(422)
 
 @app.route('/actors', methods = ['POST'])
+@requires_auth('post:actors')
 def add_actor():
   try:
     body = request.get_json()
@@ -76,6 +77,7 @@ def add_actor():
       abort(422)
 
 @app.route('/actors/<int:id>', methods = ['GET'])
+@requires_auth('get:actors')
 def get_actor_detail(id):
   try:
     actor = Actor.query.filter(Actor.id == id).one_or_none()
@@ -93,6 +95,7 @@ def get_actor_detail(id):
     abort(422)
 
 @app.route('/actors/<int:id>', methods = ['PATCH'])
+@requires_auth('patch:actors')
 def edit_actor(id):
   try:
     body = request.get_json()
@@ -125,6 +128,7 @@ def edit_actor(id):
     abort(422)
 
 @app.route('/actors/<int:id>', methods = ['DELETE'])
+@requires_auth('delete:actors')
 def delete_actor(id):
   try:
     actor = Actor.query.filter(Actor.id == id).one_or_none()
@@ -147,7 +151,8 @@ def delete_actor(id):
 #---------------------------------------
 
 @app.route('/movies', methods = ['GET'])
-def get_movies():
+@requires_auth('get:movies')
+def get_movies(token):
   try:
     movies = Movie.query.all()
 
@@ -163,6 +168,7 @@ def get_movies():
     abort(422)
 
 @app.route('/movies', methods = ['POST'])
+@requires_auth('post:movies')
 def add_movie():
   try:
     body = request.get_json()
@@ -190,6 +196,7 @@ def add_movie():
     abort(422)
 
 @app.route('/movies/<int:id>', methods = ['GET'])
+@requires_auth('get:movies')
 def get_movie_detail(id):
   try:
     movie = Movie.query.filter(Movie.id == id).one_or_none()
@@ -208,6 +215,7 @@ def get_movie_detail(id):
     abort(422)
 
 @app.route('/movies/<int:id>', methods = ['PATCH'])
+@requires_auth('patch:movies')
 def edit_movie(id):
   try:
     body = request.get_json()
@@ -238,6 +246,7 @@ def edit_movie(id):
     abort(422)
 
 @app.route('/movies/<int:id>', methods = ['DELETE'])
+@requires_auth('delete:movies')
 def delete_movie(id):
   try:
     movie = Movie.query.filter(Movie.id == id).one_or_none()
@@ -259,6 +268,7 @@ def delete_movie(id):
 #---------------------------------------
 
 @app.route('/castings', methods = ['GET'])
+@requires_auth('get:castings')
 def get_roles():
   try:
     roles = Role.query.all()
@@ -274,6 +284,7 @@ def get_roles():
     abort(422)
 
 @app.route('/castings', methods = ['POST'])
+@requires_auth('post:castings')
 def add_role():
   try:
     body = request.get_json()
@@ -312,6 +323,7 @@ def add_role():
     abort(422)
 
 @app.route('/castings/<int:id>', methods = ['DELETE'])
+@requires_auth('delete:castings')
 def delete_role(id):
   try:
     role = Role.query.filter(Role.id == id).one_or_none()
