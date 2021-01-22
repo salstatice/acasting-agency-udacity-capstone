@@ -247,24 +247,74 @@ def create_app(test_config=None):
   '''
   @app.route('/castings', methods = ['GET'])
   def get_roles():
-    return jsonify({
-      'success': True,
-      'action': 'get all roles',
-    })
+    try:
+      roles = Role.query.all()
+      
+      formatted_roles = [role.format() for role in roles]
+
+      return jsonify({
+        'success': True,
+        'action': 'get all roles',
+        'roles': formatted_roles
+      })
+    except:
+      abort(422)
 
   @app.route('/castings', methods = ['POST'])
   def add_role():
-    return jsonify({
-      'success': True,
-      'action': 'add a new role',
-    })
+    try:
+      body = request.get_json()
+      if body is None:
+        abort(400)
+
+      # only allow assgined id for testing purpose 
+      req_id = body.get('id')
+      checkRole = Role.query.filter(Role.id == req_id).one_or_none()
+      if checkRole:
+        abort(400)
+      
+      print(req_id)
+
+      # actor_id and movie_id are required
+      if not(body.get('actor_id') and body.get('movie_id')):
+        abort(400)
+
+      req_role_name = body.get('role_name')
+      req_actor_id = body.get('actor_id')
+      req_movie_id = body.get('movie_id')
+
+      # actor and movie must exist in the database
+      actor = Actor.query.filter(Actor.id == req_actor_id).one_or_none()
+      movie = Movie.query.filter(Movie.id == req_movie_id).one_or_none()
+      if not(actor and movie):
+        abort(400)
+
+      role = Role(id=req_id, role_name=req_role_name, actor_id=req_actor_id, movie_id=req_movie_id)
+      role.insert()
+
+      return jsonify({
+        'success': True,
+        'action': 'add a new role',
+      })
+    except Exception as e:
+      print(e)
+      abort(422)
 
   @app.route('/castings/<int:id>', methods = ['DELETE'])
   def delete_role(id):
-    return jsonify({
-      'success': True,
-      'action': 'delete an role',
-    })
+    try:
+      role = Role.query.filter(Role.id == id).one_or_none()
+      if not role:
+        abort(404)
+
+      role.delete()
+
+      return jsonify({
+        'success': True,
+        'action': 'delete an role',
+      })
+    except:
+      abort(422)
 
   return app
 

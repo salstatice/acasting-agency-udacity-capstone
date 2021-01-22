@@ -173,7 +173,10 @@ class Role(db.Model):
   actor_id = Column(Integer, db.ForeignKey('Actor.id'))
   movie_id = Column(Integer, db.ForeignKey('Movie.id'))
 
-  def __init__(self, role_name, actor_id, movie_id):
+  # adding assgined id for testing purpose
+
+  def __init__(self, id, role_name, actor_id, movie_id):
+    self.id = id
     self.role_name = role_name
     self.actor_id = actor_id
     self.movie_id = movie_id
@@ -188,3 +191,29 @@ class Role(db.Model):
       'movie_name': self.movie.title,
     }
   
+  '''
+  insert()
+    inserts a new model into a database
+    the model must have a unique id or null id
+    EXAMPLE
+      role = Role(role_name=req_role_name, actor_id=req_actor_id, movie_id=req_movie_id)
+      role.insert()
+  '''
+  def insert(self):
+    db.session.add(self)
+    db.session.commit()
+
+  '''
+  delete()
+    delets a model from a database
+    the model must exist in the database
+    EXAMPLE
+      role = Role.query.filter(Role.id == id).one_or_none()
+      role.delete()
+  '''
+  def delete(self):
+    db.session.delete(self)
+    db.session.commit()
+
+  def __repr__(self):
+    return json.dumps(self.format())
