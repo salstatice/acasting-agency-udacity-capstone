@@ -86,12 +86,22 @@ def get_actor_detail(payload, id):
     
     formatted_actor = [actor.format()]
 
+    roles_list = [{
+      'role_id': role.id, 
+      'role_name': role.role_name,
+      'movie_title': role.movie.title,
+      'movie_id': role.movie.id
+      } for role in actor.roles]
+    
+    formatted_actor[0]['roles'] = roles_list
+
     return jsonify({
       'success': True,
       'action': 'get a actor',
       'actors': formatted_actor,
     })
-  except:
+  except Exception as e:
+    print(e)
     abort(422)
 
 @app.route('/actors/<int:id>', methods = ['PATCH'])
@@ -204,6 +214,15 @@ def get_movie_detail(payload, id):
       abort(404)
 
     formatted_movie = [movie.format()]
+
+    roles_list = [{
+      'role_id': role.id, 
+      'role_name': role.role_name,
+      'actor_name': role.actor.name,
+      'actor_id': role.actor.id
+      } for role in movie.roles]
+
+    formatted_movie[0]['roles'] = roles_list
 
     return jsonify({
       'success': True,
