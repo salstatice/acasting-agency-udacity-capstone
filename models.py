@@ -37,11 +37,10 @@ class Actor(db.Model):
 
   # adding assgined id for testing purpose
 
-  def __init__(self, id, name, age, gender=""):
-    self.id = id
-    self.name = name
-    self.age = age
-    self.gender = gender
+  # def __init__(self, id, name, age, gender=""):
+  #   self.name = name
+  #   self.age = age
+  #   self.gender = gender
 
   def format(self):
     '''
@@ -110,10 +109,10 @@ class Movie(db.Model):
 
   # adding assgined id for testing purpose
 
-  def __init__(self, id, title, date):
-    self.id = id
-    self.title = title
-    self.date = date
+  # def __init__(self, id, title, date):
+  #   self.id = id
+  #   self.title = title
+  #   self.date = date
 
   def format(self):
     return {
@@ -177,11 +176,11 @@ class Role(db.Model):
 
   # adding assgined id for testing purpose
 
-  def __init__(self, id, role_name, actor_id, movie_id):
-    self.id = id
-    self.role_name = role_name
-    self.actor_id = actor_id
-    self.movie_id = movie_id
+  # def __init__(self, id, role_name, actor_id, movie_id):
+  #   self.id = id
+  #   self.role_name = role_name
+  #   self.actor_id = actor_id
+  #   self.movie_id = movie_id
 
   def format(self):
     return {
