@@ -1,19 +1,19 @@
 import os
 import unittest
 import json
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
-from app import create_app
-from models import db, setup_db, Actor, Movie, Role
+from models import db, Actor, Movie, Role
+from app import app
 
 
 ### Set up database path and JWT token
 
 database_path = os.environ['DATABASE_URL']
-assistant_token = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Imppb1c5X01qVXFLN1h6Wkctb2hpcSJ9.eyJpc3MiOiJodHRwczovL2FjYXN0aW5nLnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw2MDBiMTlhZDUxODUzYjAwNmEwMGM5NDIiLCJhdWQiOiJjYXN0aW5nIiwiaWF0IjoxNjExNjkyNzEwLCJleHAiOjE2MTE3NzkxMTAsImF6cCI6ImJ0blBzTTM5UkdLOGxxeWNaUVZSeDZnd3ZUaWFrZ2xjIiwic2NvcGUiOiIiLCJwZXJtaXNzaW9ucyI6WyJnZXQ6YWN0b3JzIiwiZ2V0OmNhc3RpbmdzIiwiZ2V0Om1vdmllcyJdfQ.ogFRbTlL9g9l40wVXknRav1hZVY1H9oId-spBa_cuLZyBAV_3myBa5yEmvNfcb_-WRdSPdq7DMlryernopayqV1JkyWbAE3kiLitMlOkpAXnT7jK2M5qAt7CqGfOKF3RAMV5rX21l2bUHcKjfSvrocSUQKQpeuXtRcXzVbDss2kIqqLlDd05XGYbEr89iFyuvF6zckOF7iWWcLcibz9YQD9V2y-Hw8p_HFAVJlL4oKWXTHblJkroSSgmutUoXa5pWJ42QUmVSJuQqFQH49cbAGtYcVzk29WgK64ZlzUBfojvPcXQPQ0Q4z5_uTj4ejX2jsSSHHRiqisaRQPWRuoG0A'
-director_token = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Imppb1c5X01qVXFLN1h6Wkctb2hpcSJ9.eyJpc3MiOiJodHRwczovL2FjYXN0aW5nLnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw2MDBiMTlhZDUxODUzYjAwNmEwMGM5NDIiLCJhdWQiOiJjYXN0aW5nIiwiaWF0IjoxNjExNjkyNjEyLCJleHAiOjE2MTE3NzkwMTIsImF6cCI6ImJ0blBzTTM5UkdLOGxxeWNaUVZSeDZnd3ZUaWFrZ2xjIiwic2NvcGUiOiIiLCJwZXJtaXNzaW9ucyI6WyJkZWxldGU6YWN0b3JzIiwiZ2V0OmFjdG9ycyIsImdldDpjYXN0aW5ncyIsImdldDptb3ZpZXMiLCJwYXRjaDphY3RvcnMiLCJwYXRjaDptb3ZpZXMiLCJwb3N0OmFjdG9ycyJdfQ.IINWanp2Tcb9E06x0fAs_yoGKuwn9CBXqh855GdkE9IO_oanLmsmR-3466okylw9mr48WGEhoXCLO7BW9Hca2pNVL0tY12ks1qrBS8cvicOP-oH4j5OQDh6jYD-b-xR3rnhm4RMzV7W9LfRHKRkqMxX5lr3gamhN8ER3o6Hvaaj9vZq8TFAQjFdVTIKFgxC4VWoD4JvE96Rug3dbieD2yuMq_4po5Y0tAOjShQDuVnooBDNSeYUSsTOeEENkAIspPwXzEv5v0WCn7qocgMQPAAjxkSSCVHUCDJEpiKTlrhdLb43COPGTgjlzYwfI0rHeoxxLpTXRv81jBiSUWX4m1g'
-producer_token = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Imppb1c5X01qVXFLN1h6Wkctb2hpcSJ9.eyJpc3MiOiJodHRwczovL2FjYXN0aW5nLnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw2MDBiMTlhZDUxODUzYjAwNmEwMGM5NDIiLCJhdWQiOiJjYXN0aW5nIiwiaWF0IjoxNjExNjkyNTA3LCJleHAiOjE2MTE3Nzg5MDcsImF6cCI6ImJ0blBzTTM5UkdLOGxxeWNaUVZSeDZnd3ZUaWFrZ2xjIiwic2NvcGUiOiIiLCJwZXJtaXNzaW9ucyI6WyJkZWxldGU6YWN0b3JzIiwiZGVsZXRlOmNhc3RpbmdzIiwiZGVsZXRlOm1vdmllcyIsImdldDphY3RvcnMiLCJnZXQ6Y2FzdGluZ3MiLCJnZXQ6bW92aWVzIiwicGF0Y2g6YWN0b3JzIiwicGF0Y2g6bW92aWVzIiwicG9zdDphY3RvcnMiLCJwb3N0OmNhc3RpbmdzIiwicG9zdDptb3ZpZXMiXX0.TuGy7FAphJrKA7qxmMnaQe-cj4hHt2xt_x8eXKhl2Rp9AEMfIPL6p_IpG75fJXpIlhIhh-219g7b8DN1oJDxNIyxrycnQM3m6M59Xj_dS7ZeP2sixVhJT9abNcQFeluQKx05XECstJb8TKnNnXejZ3Mo8B4afZZdL4-zTS6NcN0T_oJbIytGSNe9q6UcghbqJlXAwE59WabxCE9deUjRFZLNFNLS_TzIeEUX2UtR5RjLexTIluDsCrm_JtApM2h9eFZFak9MFgMrJW7ZZPxuvTAiwPzyIhumAPCDNTjyvG9304wCQlhNJp5qP_oCkPfoZpHtypDpxYGL27TNssl8ww'
-
+assistant_token = os.environ['ASSISTANT_TOKEN']
+director_token = os.environ['DIRECTOR_TOKEN']
+producer_token = os.environ['PRODUCER_TOKEN']
 
 
 class ACastingTestCase(unittest.TestCase):
@@ -23,11 +23,16 @@ class ACastingTestCase(unittest.TestCase):
     '''
 		Define test variables and initialize app.
 		'''
-    cls.app = create_app()
+    # launch and initialize app
+    cls.app = app
     cls.client = cls.app.test_client
-    cls.database_path = database_path
-    setup_db(cls.app, cls.database_path)
+    db.app = cls.app
+    db.init_app(cls.app)
+    db.drop_all()
 
+    # create all tables
+    db.create_all()
+    
     # binds the app to the current context(??)
     # not quite sure if I understand this part...
     #  
@@ -36,10 +41,6 @@ class ACastingTestCase(unittest.TestCase):
     #   cls.db.init_app(cls.app)
     #   # create all tables
     #   cls.db.create_all()
-
-    db.drop_all()
-    # create table
-    db.create_all()
     
     # mock actor, movie and role
     actor1 = Actor(name="First Actor", age=2, gender="Male")
