@@ -2,6 +2,7 @@ import os
 from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from datetime import datetime
 
 from models import setup_db, Actor, Movie, Role
 from auth import AuthError, requires_auth
@@ -22,8 +23,8 @@ def create_app(test_config=None):
   #---------------------------------------
 
   @app.route('/actors', methods = ['GET'])
-  # @requires_auth('get:actors')
-  def get_actors():
+  @requires_auth('get:actors')
+  def get_actors(payload):
     try:
       actors = Actor.query.all()
 
@@ -44,29 +45,25 @@ def create_app(test_config=None):
       body = request.get_json()
       if body is None:
         abort(400)
-      
-      # only allow assgin id for testing purpose 
-      req_id = body.get('id')
-      checkActor = Actor.query.filter(Actor.id == req_id).one_or_none()
-      if checkActor:
-        abort(400)
 
       req_name = body.get('name')
       req_age = body.get('age')
       req_gender = body.get('gender')
 
       if not isinstance(req_age,int):
-        abort(400, {'message': 'age must be an interger'})
+        abort(400, {'message': 'age must be an integer'})
 
-      actor = Actor(id=req_id, name=req_name, age=req_age, gender=req_gender)
+      actor = Actor(name=req_name, age=req_age, gender=req_gender)
       actor.insert()
+
+      formatted_actor = [actor.format()]
 
       return jsonify({
         'success': True,
         'action': 'add a new actor',
+        'actors': formatted_actor
       })
     except Exception as e:
-      print(e)
       if e.code == 400:
         abort(400)
       else:
@@ -97,8 +94,10 @@ def create_app(test_config=None):
         'actors': formatted_actor,
       })
     except Exception as e:
-      print(e)
-      abort(422)
+      if e.code == 404:
+        abort(404)
+      else:
+        abort(422)
 
   @app.route('/actors/<int:id>', methods = ['PATCH'])
   @requires_auth('patch:actors')
@@ -115,12 +114,15 @@ def create_app(test_config=None):
       if body.get('name'):
         actor.name = body.get('name')
       elif body.get('age'):
+        # verify age is integer
+        if not isinstance(body.get('age'),int):
+          abort(400)
         actor.age = body.get('age')
       elif body.get('gender'):
         actor.gender = body.get('gender')
       else:
         abort(400)
-
+  
       actor.update()
 
       formatted_actor = [actor.format()]
@@ -131,7 +133,12 @@ def create_app(test_config=None):
         'actors': formatted_actor,
       })
     except Exception as e:
-      abort(422)
+      if e.code == 400:
+        abort(400)
+      elif e.code == 404:
+        abort(404)
+      else:
+        abort(422)
 
   @app.route('/actors/<int:id>', methods = ['DELETE'])
   @requires_auth('delete:actors')
@@ -142,13 +149,19 @@ def create_app(test_config=None):
         abort(404)
 
       actor.delete()
+
+      formatted_actor = [actor.format()]
     
       return jsonify({
         'success': True,
         'action': 'delete an existing actor',
+        'deleted_actors': formatted_actor
       })
-    except:
-      abort(422)
+    except Exception as e:
+      if e.code == 404:
+        abort(404)
+      else:
+        abort(422)
 
 
 
@@ -170,7 +183,6 @@ def create_app(test_config=None):
         'movies': formatted_movies,
       })
     except Exception as e:
-      print(e)
       abort(422)
 
   @app.route('/movies', methods = ['POST'])
@@ -181,25 +193,42 @@ def create_app(test_config=None):
       if body is None:
         abort(400)
 
-      # only allow assgin id for testing purpose 
-      req_id = body.get('id')
-      checkMovie = Movie.query.filter(Movie.id == req_id).one_or_none()
-      if checkMovie:
-        abort(400)
-
       req_title = body.get('title')
       req_date = body.get('date')
+      if req_date is None:
+        abort(400)
+      
+      # This format string and sample is provided by dawg on 
+      # https://stackoverflow.com/questions/25341945/check-if-string-has-date-any-format
+      fmts = ('%Y','%b %d, %Y','%b %d, %Y','%B %d, %Y','%B %d %Y','%m/%d/%Y','%m/%d/%y','%b %Y','%B%Y','%b %d,%Y',
+        '%Y-%m-%d', '%y-%m-%d', '%m-%d-%Y', '%m-%d-$y')
+      is_datetime = False
+      for fmt in fmts:
+          try:
+              t = datetime.strptime(req_date, fmt)
+              is_datetime = True
+              break
+          except:
+              pass
+      if not is_datetime:
+        abort(400)
 
-      movie = Movie(id=req_id, title=req_title, date=req_date)
+      movie = Movie(title=req_title, date=req_date)
       movie.insert()
+
+      formatted_movie = [movie.format()]
 
       return jsonify({
         'success': True,
         'action': 'add a new movie',
+        'movies': formatted_movie,
+
       })
     except Exception as e:
-      print(e)
-      abort(422)
+      if e.code == 400:
+        abort(400)
+      else:
+        abort(422)
 
   @app.route('/movies/<int:id>', methods = ['GET'])
   @requires_auth('get:movies')
@@ -226,8 +255,10 @@ def create_app(test_config=None):
         'movies': formatted_movie,
       })
     except Exception as e:
-      print(e)
-      abort(422)
+      if e.code == 404:
+        abort(404)
+      else:
+        abort(422)
 
   @app.route('/movies/<int:id>', methods = ['PATCH'])
   @requires_auth('patch:movies')
@@ -244,7 +275,21 @@ def create_app(test_config=None):
       if body.get('title'):
         movie.title = body.get('title')
       elif body.get('date'):
-        movie.date = body.get('date')
+        # This format string and sample is provided by dawg on 
+        # https://stackoverflow.com/questions/25341945/check-if-string-has-date-any-format
+        fmts = ('%Y','%b %d, %Y','%b %d, %Y','%B %d, %Y','%B %d %Y','%m/%d/%Y','%m/%d/%y','%b %Y','%B%Y','%b %d,%Y',
+          '%Y-%m-%d', '%y-%m-%d', '%m-%d-%Y', '%m-%d-$y')
+        is_datetime = False
+        for fmt in fmts:
+          try:
+              t = datetime.strptime(body.get('date'), fmt)
+              is_datetime = True
+              movie.date = body.get('date')
+              break
+          except:
+              pass
+        if not is_datetime:
+          abort(400)
       else:
         abort(400)
 
@@ -257,8 +302,13 @@ def create_app(test_config=None):
         'action': 'edit an existing movie',
         'movies': formatted_movie,
       })
-    except:
-      abort(422)
+    except Exception as e:
+      if e.code == 400:
+        abort(400)
+      elif e.code == 404:
+        abort(404)
+      else:
+        abort(422)
 
   @app.route('/movies/<int:id>', methods = ['DELETE'])
   @requires_auth('delete:movies')
@@ -270,12 +320,18 @@ def create_app(test_config=None):
       
       movie.delete()
 
+      formatted_movie = [movie.format()]
+
       return jsonify({
         'success': True,
         'action': 'delete an existing movie',
+        'deleted_movies': formatted_movie,
       })
-    except:
-      abort(422)
+    except Exception as e:
+      if e.code == 404:
+        abort(404)
+      else:
+        abort(422)
 
 
   #---------------------------------------
@@ -306,12 +362,6 @@ def create_app(test_config=None):
       if body is None:
         abort(400)
 
-      # only allow assgined id for testing purpose 
-      req_id = body.get('id')
-      checkRole = Role.query.filter(Role.id == req_id).one_or_none()
-      if checkRole:
-        abort(400)
-
       # actor_id and movie_id are required
       if not(body.get('actor_id') and body.get('movie_id')):
         abort(400)
@@ -326,16 +376,21 @@ def create_app(test_config=None):
       if not(actor and movie):
         abort(400)
 
-      role = Role(id=req_id, role_name=req_role_name, actor_id=req_actor_id, movie_id=req_movie_id)
+      role = Role(role_name=req_role_name, actor_id=req_actor_id, movie_id=req_movie_id)
       role.insert()
+
+      formatted_roles = [role.format()]
 
       return jsonify({
         'success': True,
         'action': 'add a new role',
+        'roles': formatted_roles,
       })
     except Exception as e:
-      print(e)
-      abort(422)
+      if e.code == 400:
+        abort(400)
+      else:
+        abort(422)
 
   @app.route('/castings/<int:id>', methods = ['DELETE'])
   @requires_auth('delete:castings')
@@ -345,14 +400,20 @@ def create_app(test_config=None):
       if not role:
         abort(404)
 
+      formatted_roles = [role.format()]
+
       role.delete()
 
       return jsonify({
         'success': True,
         'action': 'delete an role',
+        'deleted_roles': formatted_roles,
       })
-    except:
-      abort(422)
+    except Exception as e:
+      if e.code == 404:
+        abort(404)
+      else:
+        abort(422)
 
   #---------------------------------------
   # Error Handling

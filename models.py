@@ -35,12 +35,10 @@ class Actor(db.Model):
   gender = Column(String)
   roles = db.relationship('Role', backref='actor', lazy=True)
 
-  # adding assgined id for testing purpose
-
-  # def __init__(self, id, name, age, gender=""):
-  #   self.name = name
-  #   self.age = age
-  #   self.gender = gender
+  def __init__(self, name, age, gender=""):
+    self.name = name
+    self.age = age
+    self.gender = gender
 
   def format(self):
     '''
@@ -107,12 +105,9 @@ class Movie(db.Model):
   date = Column(db.DateTime, nullable=False)
   roles = db.relationship('Role', backref='movie', lazy=True)
 
-  # adding assgined id for testing purpose
-
-  # def __init__(self, id, title, date):
-  #   self.id = id
-  #   self.title = title
-  #   self.date = date
+  def __init__(self, title, date):
+    self.title = title
+    self.date = date
 
   def format(self):
     return {
@@ -174,13 +169,10 @@ class Role(db.Model):
   actor_id = Column(Integer, db.ForeignKey('Actor.id'))
   movie_id = Column(Integer, db.ForeignKey('Movie.id'))
 
-  # adding assgined id for testing purpose
-
-  # def __init__(self, id, role_name, actor_id, movie_id):
-  #   self.id = id
-  #   self.role_name = role_name
-  #   self.actor_id = actor_id
-  #   self.movie_id = movie_id
+  def __init__(self, role_name, actor_id, movie_id):
+    self.role_name = role_name
+    self.actor_id = actor_id
+    self.movie_id = movie_id
 
   def format(self):
     return {

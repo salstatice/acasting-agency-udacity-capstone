@@ -1,4 +1,4 @@
-database_name="acasting"
+database_name="acasting_test"
 
 # flask setup
 export FLASK_APP=app.py
