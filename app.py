@@ -15,6 +15,7 @@ migrate = Migrate(app, db)
 
 CORS(app)
 
+trigger_deployment = "Attemp #2"
   
 @app.route('/')
 def welcome():
