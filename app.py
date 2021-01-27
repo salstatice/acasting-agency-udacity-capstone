@@ -167,7 +167,7 @@ def get_actor_detail(payload, id):
 def edit_actor(payload, id):
   '''
   Edit an existing actor entity
-    return the editted actor entity in JSON format
+    return the edited actor entity in JSON format
     EXAMPLE
     {
       "action": "edit an existing actor",
@@ -419,7 +419,7 @@ def edit_movie(payload, id):
   '''
   Edit an existing movie
     - date must be in an expected form
-    - return editted movie in JSON format
+    - return edited movie in JSON format
     EXAMPLE
     {
       "action": "edit an existing movie",
@@ -528,7 +528,7 @@ def delete_movie(payload, id):
 @requires_auth('get:castings')
 def get_roles(payload):
   '''
-  Get a list of all roles in JSON formate
+  Get a list of all roles in JSON format
     EXAMPLE
     {
       "action": "get all roles",
