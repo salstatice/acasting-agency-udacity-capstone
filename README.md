@@ -4,16 +4,15 @@ Capstone Project for Udacity Full Stack Nanodegree
 
 
 ## API Reference
-----------------------
 ### Getting Started
 - Base URL: 
-  - The app is hosted at https://acasting-agency.herokuapp.com/
-  - When run locally, the backend app is hosted at the default `http://127.0.0.1:5000/`, which is set as a proxy in the frontend configuration.
+    - The app is hosted at https://acasting-agency.herokuapp.com/
+    - When run locally, the backend app is hosted at the default `http://127.0.0.1:5000/`, which is set as a proxy in the frontend configuration.
 
 - API Keys /Authentication (if applicable):
- - This app use [Auth0](https://auth0.com/) for authentication. To gain access:
-   - signup using [this link](https://acasting.us.auth0.com/authorize?audience=casting&response_type=token&client_id=btnPsM39RGK8lqycZQVRx6gwvTiakglc&redirect_uri=https://acasting-agency.herokuapp.com/), then email koutest1001@gmail.com for role permission, or
-   -  (for Udacity reviewer) use jwt token provided in student notes
+    - This app use [Auth0](https://auth0.com/) for authentication. To gain access:
+        - signup using [this link](https://acasting.us.auth0.com/authorize?audience=casting&response_type=token&client_id=btnPsM39RGK8lqycZQVRx6gwvTiakglc&redirect_uri=https://acasting-agency.herokuapp.com/), then email koutest1001@gmail.com for role permission, or
+        -  (for Udacity reviewer) use jwt token provided in student notes
 
 ### Error Handling
 Errors are returned as JSON objects in one of the two following format:
@@ -48,7 +47,7 @@ A list of expected response code:
 
 #### GET /actors
 
--  Get a list of all actors in JSON format
+- Get a list of all actors in JSON format
 - Example:
 ```
    {
@@ -68,9 +67,9 @@ A list of expected response code:
 #### POST /actors
 
 - Add an actor entity to database
- - actor has name, age, gender, and an unique id assigned by database
- - age must be an integer
-  - return the new actor entity in JSON format
+    - actor has name, age, gender, and an unique id assigned by database
+    - age must be an integer
+    - return the new actor entity in JSON format
 - Example:
 ```
     {
@@ -117,7 +116,7 @@ A list of expected response code:
 #### PATCH /actors/{actor_id}
 
 - Edit an existing actor entity
- - return the edited actor entity in JSON format
+    - return the edited actor entity in JSON format
 - Example:
 ```
     {
@@ -137,7 +136,7 @@ A list of expected response code:
 #### DELETE /actors/{actor_id} 
 
 - Delete an existing actor entity from database
- - return the deleted actor info in JSON format
+    - return the deleted actor info in JSON format
 - Example:
 ```
     {
@@ -176,11 +175,11 @@ A list of expected response code:
 #### POST /movies
 
 - Add a movie entity to database
- - Moive has title and date
- - date must be in an expected form
-   - `'%Y','%b %d, %Y','%b %d, %Y','%B %d, %Y','%B %d %Y','%m/%d/%Y','%m/%d/%y','%b %Y','%B%Y','%b %d,%Y',
+    - Moive has title and date
+    - date must be in an expected form
+        - `'%Y','%b %d, %Y','%b %d, %Y','%B %d, %Y','%B %d %Y','%m/%d/%Y','%m/%d/%y','%b %Y','%B%Y','%b %d,%Y',
       '%Y-%m-%d', '%y-%m-%d', '%m-%d-%Y', '%m-%d-$y'`
- - return new movie in JSON format
+    - return new movie in JSON format
 - Example:
 ```
     {
@@ -225,8 +224,8 @@ A list of expected response code:
 #### PATCH /movie/{movie_id}
 
 - Edit an existing movie
- - date must be in an expected form
- - return edited movie in JSON format
+    - date must be in an expected form
+    - return edited movie in JSON format
 - Example:
 ```
     {
@@ -245,7 +244,7 @@ A list of expected response code:
 #### DELETE /movie/{movie_id}
 
 - Delete an existing actor entity from database
- - return the deleted actor info in JSON format
+    - return the deleted actor info in JSON format
 - Example:
 ```
     {
@@ -288,10 +287,9 @@ A list of expected response code:
 #### POST /castings
 
 - Add a role enitiy to database
- - role has role_name, actor_id and movie_id
- - actor_id and movie_id must be associated with an existing record
-      from the database
- - return the new role in JSON format
+    - role has role_name, actor_id and movie_id
+    - actor_id and movie_id must be associated with an existing record from the database
+    - return the new role in JSON format
 - Example:
 ```
     {
@@ -313,7 +311,7 @@ A list of expected response code:
 #### DELETE /castings/{role_id}
 
 - Delete an existing role from the database
- - return the delete role info in JSON format
+    - return the delete role info in JSON format
 - Example:
 ```
     {
