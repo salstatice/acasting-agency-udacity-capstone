@@ -124,6 +124,8 @@ python test_app.py
 To test endpoints with [Postman](https://getpostman.com):
 - instruction coming...
 
+(The current postman file is not perfect. it was created when I had control over the assigned id. Further improvement needed. If you would like to use it to test via Postman, please edit the actor_id, movie_id, role_id according to the id given by the database. Thanks)
+
 
 ## API Reference
 ### Getting Started
