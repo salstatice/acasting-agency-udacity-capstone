@@ -1,5 +1,35 @@
-# ACasting Agency - Capstone Project for Udacity Full Stack Nanodegree
+# ACasting Agency
 Capstone Project for Udacity Full Stack Nanodegree
+
+## About the project
+**ACasting is a fictional casting agency.** It is a company that responsible for creating movies and managing and assigning actors to those movies.
+
+This project is a catalog for ACasting Agency employees to simplify the process of look up actors and movies, assign actors to movies and organize casting. Employees have different permission based on their roles.
+- Casting Assistant
+     - Can view actors, movies and roles
+- Casting Director
+    - All permissions a Casting Assistant has and…
+    - Add or delete an actor from the database
+    - Modify actors or movies
+- Executive Producer
+   - All permissions a Casting Director has and…
+   - Add or delete a movie from the database
+   - Create or delete a movie role from the database
+   - Assign actors to a movie role
+
+This project is currently hosted at https://acasting-agency.herokuapp.com/ and does not have a frontend.
+
+### Background 
+This project is build to test and demonstrate the following skills:
+- SQL and Data Modeling using SQLAlchemy
+- Create web app using Flask
+- Follow RESTful principles of API development
+- Testing validity of API behavior and error handling
+- Enable Role Based Authentication and roles-based access control (RBAC) in a Flask application
+- Configure third-party authentication
+- Deployment via Heroku
+- Project Documentation
+
 
 ## Getting Started
 
