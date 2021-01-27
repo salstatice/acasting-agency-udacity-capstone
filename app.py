@@ -29,6 +29,22 @@ def welcome():
 @app.route('/actors', methods = ['GET'])
 @requires_auth('get:actors')
 def get_actors(payload):
+  '''
+  Get a list of all actors in JSON format
+    EXAMPLE
+    {
+      "action": "get all actors",
+      "actors": [
+        {
+          "age": 117,
+          "gender": "Male",
+          "id": 3,
+          "name": "Link"
+        }
+      ],
+      "success": true
+  }
+  '''
   try:
     actors = Actor.query.all()
 
@@ -45,6 +61,25 @@ def get_actors(payload):
 @app.route('/actors', methods = ['POST'])
 @requires_auth('post:actors')
 def add_actor(payload):
+  '''
+  Add an actor entity to database
+    actor has name, age, gender, and an unique id assigned by database
+    age must be an integer
+    return the new actor entity in JSON format
+    EXAMPLE
+    {
+      "action": "add a new actor",
+      "actors": [
+        {
+          "age": 117,
+          "gender": "Male",
+          "id": 3,
+          "name": "Link"
+        }
+      ],
+      "success": true
+    }
+  '''
   try:
     body = request.get_json()
     if body is None:
@@ -76,6 +111,30 @@ def add_actor(payload):
 @app.route('/actors/<int:id>', methods = ['GET'])
 @requires_auth('get:actors')
 def get_actor_detail(payload, id):
+  '''
+  Return actor's detail and related roles in JSON format
+    EXAMPLE
+    {
+    "action": "get a actor",
+    "actors": [
+      {
+        "age": 117,
+        "gender": "Male",
+        "id": 3,
+        "name": "Link",
+        "roles": [
+          {
+            "movie_id": 1,
+            "movie_title": "The Legend of Zelda: Breath of the Wild",
+            "role_id": 1,
+            "role_name": "Hero who doesn't save the princess"
+          }
+        ]
+      }
+    ],
+    "success": true
+    }
+  '''
   try:
     actor = Actor.query.filter(Actor.id == id).one_or_none()
     if not actor:
@@ -106,6 +165,23 @@ def get_actor_detail(payload, id):
 @app.route('/actors/<int:id>', methods = ['PATCH'])
 @requires_auth('patch:actors')
 def edit_actor(payload, id):
+  '''
+  Edit an existing actor entity
+    return the editted actor entity in JSON format
+    EXAMPLE
+    {
+      "action": "edit an existing actor",
+      "actors": [
+        {
+          "age": 117,
+          "gender": "Male",
+          "id": 3,
+          "name": "Link"
+        }
+      ],
+      "success": true
+    }
+  '''
   try:
     body = request.get_json()
     if body is None:
@@ -147,6 +223,23 @@ def edit_actor(payload, id):
 @app.route('/actors/<int:id>', methods = ['DELETE'])
 @requires_auth('delete:actors')
 def delete_actor(payload, id):
+  '''
+  Delete an existing actor entity from database
+    return the deleted actor info in JSON format
+    EXAMPLE
+    {
+      "action": "delete an existing actor",
+      "deleted_actors": [
+        {
+          "age": 24,
+          "gender": "Female",
+          "id": 2,
+          "name": "Amy"
+        }
+      ],
+      "success": true
+    }
+  '''
   try:
     actor = Actor.query.filter(Actor.id == id).one_or_none()
     if not actor:
@@ -176,6 +269,21 @@ def delete_actor(payload, id):
 @app.route('/movies', methods = ['GET'])
 @requires_auth('get:movies')
 def get_movies(payload):
+  '''
+  Get a list of movie entity in JSON format
+    EXAMPLE
+    {
+      "action": "get all movies",
+      "movies": [
+        {
+          "id": 1,
+          "release_year": "2017",
+          "title": "The Legend of Zelda: Breath of the Wild"
+        }
+      ],
+      "success": true
+    }
+  '''
   try:
     movies = Movie.query.all()
 
@@ -192,6 +300,24 @@ def get_movies(payload):
 @app.route('/movies', methods = ['POST'])
 @requires_auth('post:movies')
 def add_movie(payload):
+  '''
+  Add a movie entity to database
+    - Moive has title and date
+    - date must be in an expected form
+    - return new movie in JSON format
+    EXAMPLE
+    {
+      "action": "add a new movie",
+      "movies": [
+        {
+          "id": 1,
+          "release_year": "2017",
+          "title": "The Legend of Zelda: Breath of the Wild"
+        }
+      ],
+      "success": true
+    }
+  '''
   try:
     body = request.get_json()
     if body is None:
@@ -237,6 +363,29 @@ def add_movie(payload):
 @app.route('/movies/<int:id>', methods = ['GET'])
 @requires_auth('get:movies')
 def get_movie_detail(payload, id):
+  '''
+  Return movie detail and related roles in JSON format
+    EXAMPLE
+    {
+      "action": "get a movie",
+      "movies": [
+        {
+          "id": 1,
+          "release_year": "2017",
+          "roles": [
+            {
+              "actor_id": 3,
+              "actor_name": "Link",
+              "role_id": 1,
+              "role_name": "Hero who doesn't save the princess"
+            }
+          ],
+          "title": "The Legend of Zelda: Breath of the Wild"
+        }
+      ],
+      "success": true
+    }
+  '''
   try:
     movie = Movie.query.filter(Movie.id == id).one_or_none()
     if not movie:
@@ -267,6 +416,23 @@ def get_movie_detail(payload, id):
 @app.route('/movies/<int:id>', methods = ['PATCH'])
 @requires_auth('patch:movies')
 def edit_movie(payload, id):
+  '''
+  Edit an existing movie
+    - date must be in an expected form
+    - return editted movie in JSON format
+    EXAMPLE
+    {
+      "action": "edit an existing movie",
+      "movies": [
+        {
+          "id": 1,
+          "release_year": "2017",
+          "title": "The Legend of Zelda: Breath of the Wild"
+        }
+      ],
+      "success": true
+    }
+  '''
   try:
     body = request.get_json()
     if body is None:
@@ -317,6 +483,22 @@ def edit_movie(payload, id):
 @app.route('/movies/<int:id>', methods = ['DELETE'])
 @requires_auth('delete:movies')
 def delete_movie(payload, id):
+  '''
+  Delete an existing movie from database
+    - return delete movie info in JSON format
+    EXAMPLE
+    {
+      "action": "delete an existing movie",
+      "deleted_movies": [
+        {
+          "id": 1,
+          "release_year": "2017",
+          "title": "The Legend of Zelda: Breath of the Wild"
+        }
+      ],
+      "success": true
+    }
+  '''
   try:
     movie = Movie.query.filter(Movie.id == id).one_or_none()
     if not movie:
@@ -345,6 +527,24 @@ def delete_movie(payload, id):
 @app.route('/castings', methods = ['GET'])
 @requires_auth('get:castings')
 def get_roles(payload):
+  '''
+  Get a list of all roles in JSON formate
+    EXAMPLE
+    {
+      "action": "get all roles",
+      "roles": [
+        {
+          "actor_id": 3,
+          "actor_name": "Link",
+          "id": 1,
+          "movie_id": 1,
+          "movie_name": "The Legend of Zelda: Breath of the Wild",
+          "role_name": "Hero who doesn't save the princess"
+        }
+      ],
+      "success": true
+    }
+  '''
   try:
     roles = Role.query.all()
     
@@ -361,6 +561,28 @@ def get_roles(payload):
 @app.route('/castings', methods = ['POST'])
 @requires_auth('post:castings')
 def add_role(payload):
+  '''
+  Add a role enitiy to database
+    - role has role_name, actor_id and movie_id
+    - actor_id and movie_id must be associated with an existing record
+      from the database
+    - return the new role in JSON format
+    EXAMPLE
+    {
+      "action": "add a new role",
+      "roles": [
+        {
+          "actor_id": 3,
+          "actor_name": "Link",
+          "id": 1,
+          "movie_id": 1,
+          "movie_name": "The Legend of Zelda: Breath of the Wild",
+          "role_name": "Hero who doesn't save the princess"
+        }
+      ],
+      "success": true
+    }
+  '''
   try:
     body = request.get_json()
     if body is None:
@@ -399,6 +621,25 @@ def add_role(payload):
 @app.route('/castings/<int:id>', methods = ['DELETE'])
 @requires_auth('delete:castings')
 def delete_role(payload, id):
+  '''
+  Delete an existing role from the database
+    return the delete role info in JSON format
+    EXAMPLE
+    {
+      "action": "delete an role",
+      "deleted_roles": [
+        {
+          "actor_id": 3,
+          "actor_name": "Link",
+          "id": 1,
+          "movie_id": 1,
+          "movie_name": "The Legend of Zelda: Breath of the Wild",
+          "role_name": "Hero who doesn't save the princess"
+        }
+      ],
+      "success": true
+    }
+  '''
   try:
     role = Role.query.filter(Role.id == id).one_or_none()
     if not role:
@@ -431,7 +672,7 @@ def delete_role(payload, id):
 #       "message": "resource not found"
 #     }), 404
 #
-#   Authorization Errors are handlded differenrly by class AuthError
+# Authorization Errors are handlded differenrly by class AuthError
 #   EXAMPLE
 #     e.error = {
 #       'code':'authorization_header_missing',
