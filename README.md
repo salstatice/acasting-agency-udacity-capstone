@@ -169,9 +169,10 @@ A list of expected response code:
 #### [Actors]
 
 #### GET /actors
-
-- Get a list of all actors in JSON format
-- Example:
+Get a list of all actors in JSON format
+- Curl sample: 
+`curl -i -H "Content-Type: application/json" -H "Authorization: Bearer {INSERT_TOKEN_HERE}" http://localhost:5000/actors`
+- Response sample:
 ```
    {
       "action": "get all actors",
@@ -188,12 +189,21 @@ A list of expected response code:
 ```
 
 #### POST /actors
-
-- Add an actor entity to database
-    - actor has name, age, gender, and an unique id assigned by database
-    - age must be an integer
-    - return the new actor entity in JSON format
-- Request example:
+Add an actor entity to database
+ - actor has name, age, gender, and an unique id assigned by database
+ - age must be an integer
+ - return the new actor entity in JSON format
+- Curl sample: 
+`curl http://localhost:5000/actors -X POST -H "Content-Type: application/json" -H "Authorization: Bearer {INSERT_TOKEN_HERE}" -d '{"name": "Link", "age": 117, "gender": "Male"}`
+- Request sample:
+```
+    {
+        "name": "Link",
+        "age": 117,
+        "gender": "Male"
+    }
+```
+- Request sample:
 ```
     {
         "name": "Link",
@@ -218,8 +228,9 @@ A list of expected response code:
 ```
 
 #### GET /actors/{actor_id}
-
-- Return actor's detail and related roles in JSON format
+Return actor's detail and related roles in JSON format
+- Curl sample: 
+`curl -i -H "Content-Type: application/json" -H "Authorization: Bearer {INSERT_TOKEN_HERE}" http://localhost:5000/actors/3`
 - Example:
 ```
   {
@@ -245,9 +256,10 @@ A list of expected response code:
 ```
 
 #### PATCH /actors/{actor_id}
-
-- Edit an existing actor entity
+Edit an existing actor entity
     - return the edited actor entity in JSON format
+- Sample curl:
+`curl http://localhost:5000/actors -X PATCH -H "Content-Type: application/json" -H "Authorization: Bearer {INSERT_TOKEN_HERE}" -d '{"name": "Link", "age": 117, "gender": "Male"}`
 - Example:
 ```
     {
@@ -265,9 +277,10 @@ A list of expected response code:
 ```
 
 #### DELETE /actors/{actor_id} 
-
-- Delete an existing actor entity from database
+Delete an existing actor entity from database
     - return the deleted actor info in JSON format
+- Sample curl: 
+`curl http://localhost:5000/actors -X DELETE -H "Content-Type: application/json" -H "Authorization: Bearer {INSERT_TOKEN_HERE}"`
 - Example:
 ```
     {
