@@ -5,35 +5,11 @@ import json
 db = SQLAlchemy()
 
 
-class Actor(db.Model):
+class inheritedClassName(db.Model):
     '''
-    Actor
-    Have name, age and gender.
+    Extend the base Model class to add common methods
     '''
-    __tablename__ = 'Actor'
-
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
-    age = Column(Integer)
-    gender = Column(String)
-    roles = db.relationship('Role', backref='actor', lazy=True)
-
-    def __init__(self, name, age, gender=""):
-        self.name = name
-        self.age = age
-        self.gender = gender
-
-    def format(self):
-        '''
-        format()
-        returns a json repsentation of the Actor model.
-        '''
-        return {
-            'id': self.id,
-            'name': self.name,
-            'age': self.age,
-            'gender': self.gender,
-        }
+    __abstract__ = True
 
     def insert(self):
         '''
@@ -71,11 +47,42 @@ class Actor(db.Model):
         db.session.delete(self)
         db.session.commit()
 
+
+class Actor(inheritedClassName):
+    '''
+    Actor
+    Have name, age and gender.
+    '''
+    __tablename__ = 'Actor'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    age = Column(Integer)
+    gender = Column(String)
+    roles = db.relationship('Role', backref='actor', lazy=True)
+
+    def __init__(self, name, age, gender=""):
+        self.name = name
+        self.age = age
+        self.gender = gender
+
+    def format(self):
+        '''
+        format()
+        returns a json repsentation of the Actor model.
+        '''
+        return {
+            'id': self.id,
+            'name': self.name,
+            'age': self.age,
+            'gender': self.gender,
+        }
+
     def __repr__(self):
         return json.dumps(self.format())
 
 
-class Movie(db.Model):
+class Movie(inheritedClassName):
     '''
     Movie
     Have title and release date
@@ -98,47 +105,11 @@ class Movie(db.Model):
             'release_year': self.date.strftime("%Y"),
         }
 
-    def insert(self):
-        '''
-        insert()
-        inserts a new model into a database
-        the model must have a unique id or null id
-        EXAMPLE
-            movie = Movie(title=req_title, date=req_date)
-            movie.insert()
-        '''
-        db.session.add(self)
-        db.session.commit()
-
-    def update(self):
-        '''
-        update()
-        updates a model in a database
-        the model must exist in the database
-        EXAMPLE
-            movie = Movie.query.filter(Movie.id == id).one_or_none()
-            movie.title = "New Movie"
-            movie.update()
-        '''
-        db.session.commit()
-
-    def delete(self):
-        '''
-        delete()
-        delets a model from a database
-        the model must exist in the database
-        EXAMPLE
-            movie = Movie.query.filter(Movie.id == id).one_or_none()
-            movie.delete()
-        '''
-        db.session.delete(self)
-        db.session.commit()
-
     def __repr__(self):
         return json.dumps(self.format())
 
 
-class Role(db.Model):
+class Role(inheritedClassName):
     '''
     Role
     Have role name, actor name and related movie
@@ -164,31 +135,6 @@ class Role(db.Model):
             'movie_id': self.movie_id,
             'movie_name': self.movie.title,
         }
-
-    def insert(self):
-        '''
-        insert()
-        inserts a new model into a database
-        the model must have a unique id or null id
-        EXAMPLE
-            role = Role(role_name=req_role_name, actor_id=req_actor_id,
-                movie_id=req_movie_id)
-            role.insert()
-        '''
-        db.session.add(self)
-        db.session.commit()
-
-    def delete(self):
-        '''
-        delete()
-        delets a model from a database
-        the model must exist in the database
-        EXAMPLE
-            role = Role.query.filter(Role.id == id).one_or_none()
-            role.delete()
-        '''
-        db.session.delete(self)
-        db.session.commit()
 
     def __repr__(self):
         return json.dumps(self.format())
