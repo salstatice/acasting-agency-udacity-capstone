@@ -81,7 +81,7 @@ director_token=""
 producer_token=""
 ```
 
-This app use [Auth0](https://auth0.com/) for authentication. The jwt tokens on file will expired on 01/27/2021 @ 8:25pm (UTC). If you need updated tokens, please email koutest1001@gmail.com. (Also see API reference below)
+This app use [Auth0](https://auth0.com/) for authentication. The jwt tokens on file will expired on 01/28/2021 @ 5:24am (UTC). If you need updated tokens, please email koutest1001@gmail.com. (Also see API reference below)
 
 To export the variables, run(GitBash):
 
