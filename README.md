@@ -1,6 +1,98 @@
 # ACasting Agency - Capstone Project for Udacity Full Stack Nanodegree
 Capstone Project for Udacity Full Stack Nanodegree
 
+## Getting Started
+
+### Installing Dependencies
+
+#### Python 3.7
+
+Follow instructions to install the latest version of python for your platform in the [python docs](https://docs.python.org/3/using/unix.html#getting-and-installing-the-latest-version-of-python)
+
+#### Virtual Environment
+
+We recommend working within a virtual environment whenever using Python for projects. This keeps your dependencies for each project separate and organized. Instructions for setting up a virtual environment for your platform can be found in the [python docs](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/)
+
+#### PIP Dependencies
+
+Once you have your virtual environment setup and running, install dependencies by naviging to the `/backend` directory and running:
+
+```bash
+pip install -r requirements.txt
+```
+
+##### Key Dependencies
+
+- [Flask](http://flask.pocoo.org/)  is a lightweight backend microservices framework. Flask is required to handle requests and responses.
+
+- [SQLAlchemy](https://www.sqlalchemy.org/) and [Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/en/2.x/) are libraries to handle the lightweight the database.
+
+- [jose](https://python-jose.readthedocs.io/en/latest/) JavaScript Object Signing and Encryption for JWTs. Useful for encoding, decoding, and verifying JWTS.
+
+## Running the server
+Open a terminal session and activate the virtual environment.
+
+To setup the flask app, run:
+```bash
+export FLASK_APP=app.py;
+```
+This app need to be connected to a database.
+
+To set up environment variables, open 'setup.sh' and edit the following variables:
+```
+$db_dialect=""
+$db_username=""
+$db_password=""
+$db_host=""
+$db_name=""
+
+assistant_token=""
+director_token=""
+producer_token=""
+```
+
+This app use [Auth0](https://auth0.com/) for authentication. The jwt tokens on file will expired on 01/27/2021 @ 8:25pm (UTC). If you need updated tokens, please email koutest1001@gmail.com. (Also see API reference below)
+
+To export the variables, run(GitBash):
+
+```bash
+source setup.sh
+```
+
+To initialize database, run:
+```bash
+flask db migrate
+flask db upgrade
+```
+
+To run the server, execute:
+
+```bash
+flask run --reload
+```
+
+The `--reload` flag will detect file changes and restart the server automatically.
+
+## Unittests
+
+Unittests are located in the `test_app.py`. 
+
+Before running tests, check if the correct database has been seen at 'setup.sh'.
+
+To export the variables, run(GitBash):
+
+```bash
+source setup.sh
+```
+
+To run the tests, execute:
+
+```bash
+python test_app.py
+```
+### Postman
+To test endpoints with [Postman](https://getpostman.com):
+- instruction coming...
 
 
 ## API Reference
@@ -10,9 +102,10 @@ Capstone Project for Udacity Full Stack Nanodegree
     - When run locally, the backend app is hosted at the default `http://127.0.0.1:5000/`, which is set as a proxy in the frontend configuration.
 
 - API Keys /Authentication (if applicable):
-    - This app use [Auth0](https://auth0.com/) for authentication. To gain access:
+    - This app uses [Auth0](https://auth0.com/) for authentication. To gain access:
         - signup using [this link](https://acasting.us.auth0.com/authorize?audience=casting&response_type=token&client_id=btnPsM39RGK8lqycZQVRx6gwvTiakglc&redirect_uri=https://acasting-agency.herokuapp.com/), then email koutest1001@gmail.com for role permission, or
-        -  (for Udacity reviewer) use jwt token provided in student notes
+        -  (for Udacity reviewer) use jwt token provided in student notes, or
+        -  to run locally, email koutest1001@gmail.com for jwt token 
 
 ### Error Handling
 Errors are returned as JSON objects in one of the two following format:
