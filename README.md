@@ -193,7 +193,15 @@ A list of expected response code:
     - actor has name, age, gender, and an unique id assigned by database
     - age must be an integer
     - return the new actor entity in JSON format
-- Example:
+- Request example:
+```
+    {
+        "name": "Link",
+        "age": 117,
+        "gender": "Male"
+    }
+```
+- Response example:
 ```
     {
       "action": "add a new actor",
@@ -303,6 +311,13 @@ A list of expected response code:
         - `'%Y','%b %d, %Y','%b %d, %Y','%B %d, %Y','%B %d %Y','%m/%d/%Y','%m/%d/%y','%b %Y','%B%Y','%b %d,%Y',
       '%Y-%m-%d', '%y-%m-%d', '%m-%d-%Y', '%m-%d-$y'`
     - return new movie in JSON format
+- Request example:
+```
+    {
+        "title": "The Legend of Zelda: Breath of the Wild",
+        "date": "2017-03-03"
+    }
+```
 - Example:
 ```
     {
@@ -413,7 +428,15 @@ A list of expected response code:
     - role has role_name, actor_id and movie_id
     - actor_id and movie_id must be associated with an existing record from the database
     - return the new role in JSON format
-- Example:
+- Request example:
+```
+    {
+        "role_name": "Hero who doesn't save the princess",
+        "actor_id": 3,
+        "movie_id": 1
+    }
+```
+- Response example:
 ```
     {
       "action": "add a new role",
